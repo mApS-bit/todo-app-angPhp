@@ -96,6 +96,48 @@ try {
         exit;
 
     }
+
+    //DELETE 
+    elseif ($_SERVER['REQUEST_METHOD'] === 'DELETE'){
+
+        $data = json_decode(file_get_contents('php://input'), true);
+        $id = $_GET['id'] ?? ($data['id'] ?? null);
+        
+        if (!$id) {
+            http_response_code(400);
+            echo json_encode([
+                'success' => false,
+                'error' => 'ID de la tarea es requerido'
+            ]);
+            exit;
+        }
+
+        $stmt = $db->prepare("DELETE FROM tasks WHERE id = ?");
+        $stmt->execute([$id]);
+
+        if ($stmt->rowCount() > 0) {
+            echo json_encode([
+                'success' => true,
+                'message' => 'Tarea eliminada exitosamente',
+                'rows_affected' => $stmt->rowCount()
+            ]);
+        } else {
+            http_response_code(404);
+            echo json_encode([
+                'success' => false,
+                'error' => 'Task Not Found'
+            ]);
+        }
+        exit;
+
+    }else{
+        http_response_code(405);
+        echo json_encode([
+            'success' => false,
+            'error' => 'Método no permitido'
+        ]);
+        exit;
+    }
     
 } catch (Exception $e) {
     http_response_code(500);
