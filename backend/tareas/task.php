@@ -31,6 +31,71 @@ try {
             'id' => $db->lastInsertId()
         ]);
     }
+
+    //PUT -UPDATE Task
+    elseif ($_SERVER['REQUEST_METHOD'] === 'PUT'){
+
+        $data = json_decode(file_get_contents('php://input'), true);
+        // Permitir id por query o body
+        $id = $_GET['id'] ?? ($data['id'] ?? null);
+        
+        if (!$id) {
+            http_response_code(400);
+            echo json_encode([
+                'success' => false,
+                'error' => 'ID de usuario es requerido'
+            ]);
+            exit;
+        }
+
+
+        // Construir query 
+        $campos = [];
+        $valores = [];
+        
+        if (isset($data['titulo'])) {
+            $campos[] = 'titulo = ?';
+            $valores[] = $data['titulo'];
+        }
+        
+        if (isset($data['numero'])) {
+            $campos[] = 'numero = ?';
+            $valores[] = $data['numero'];
+        }
+        
+        if (isset($data['descripcion'])) {
+            $campos[] = 'descripcion = ?';
+            $valores[] = $data['descripcion'];
+        }
+        
+        if (isset($data['estado'])){
+            $campos[] = 'estado = ?';
+            $valores[] = $data['estado'];
+        }
+
+        if (empty($campos)) {
+            http_response_code(400);
+            echo json_encode([
+                'success' => false,
+                'error' => 'No hay datos para actualizar'
+            ]);
+            exit;
+        }
+        
+        $valores[] = $id; // Agregar ID al final para el WHERE
+        
+        $sql = "UPDATE tasks SET " . implode(', ', $campos) . " WHERE id = ?";
+        $stmt = $db->prepare($sql);
+        $stmt->execute($valores);
+        
+        echo json_encode([
+            'success' => true,
+            'message' => 'Tarea actualizada exitosamente',
+            'rows_affected' => $stmt->rowCount()
+        ]);
+        exit;
+
+    }
     
 } catch (Exception $e) {
     http_response_code(500);
