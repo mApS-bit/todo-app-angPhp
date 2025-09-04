@@ -14,7 +14,9 @@ import { TodoList } from './todoList';
     <div class="container my-4">
       <user-view></user-view>
 
-      <todo-hero [total]="tareas.length" [completed]="completedTasks" class="my-3"></todo-hero>
+      <todo-hero [total]="tareas.length" [completed]="completedTasks" 
+      [onPause] = "pausedTasks" 
+      class="my-3"></todo-hero>
 
       <form-task class="mb-4" (add)="onAddTask($event)"></form-task>
 
@@ -35,6 +37,7 @@ import { TodoList } from './todoList';
 export class App implements OnInit {
   tareas : Todo[] = [];
   completedTasks : number = 0; 
+  pausedTasks : number = 0;
   protected readonly title = signal('frontend');
 
   constructor(private tareasService: TareasService) {}
@@ -47,6 +50,7 @@ export class App implements OnInit {
           fecha_creacion: new Date(t.fecha_creacion)
         })); 
         this.completedTasks = this.tareas.filter(tarea => tarea.estado === "completado").length;
+        this.pausedTasks = this.tareas.filter(tarea => tarea.estado === "pendiente").length;
       }, 
       error: (err) => console.log('Error al cargar tareas: ', err)
     });
@@ -73,6 +77,8 @@ export class App implements OnInit {
       };
       this.tareas.push(nuevaTarea);
       this.completedTasks = this.tareas.filter(t => t.estado === "completado").length;
+      this.pausedTasks = this.tareas.filter(t => t.estado === "pendiente").length;
+
     },
     error: (err) => console.error('Error al crear tarea: ', err)
   });
@@ -97,6 +103,8 @@ export class App implements OnInit {
 
       // Recalcular completadas
       this.completedTasks = this.tareas.filter(t => t.estado === "completado").length;
+      // pendientes
+      this.pausedTasks = this.tareas.filter(t => t.estado === "pendiente").length;
     },
     error: (err) => console.error('Error al actualizar tarea: ', err)
   });

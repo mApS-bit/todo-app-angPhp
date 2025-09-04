@@ -12,6 +12,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 header('Content-Type: application/json');
 
+// Función para convertir número a binario
+function convertirABinario($numero) {
+    // Si ya es binario (solo 0s y 1s), no convertir
+    if (preg_match('/^[01]+$/', $numero)) {
+        return $numero;
+    }
+    
+    // Si es numérico, convertir a binario
+    if (is_numeric($numero)) {
+        return decbin((int)$numero);
+    }
+    
+    // Si es texto, convertir cada carácter a ASCII
+    $binario = '';
+    for ($i = 0; $i < strlen($numero); $i++) {
+        $binario .= decbin(ord($numero[$i]));
+    }
+    return $binario;
+}
+
 try {
     $db = DatabaseConnection::getInstance();
     
@@ -31,8 +51,16 @@ try {
     elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $data = json_decode(file_get_contents('php://input'), true);
         
+        
+        $numeroBinario = convertirABinario($data['numero']);
+        
         $stmt = $db->prepare("INSERT INTO tasks (titulo, numero, descripcion, estado) VALUES (?, ?, ?, ?)");
-        $stmt->execute([$data['titulo'], $data['numero'], $data['descripcion'], $data['estado']?? 'pendiente']);
+        $stmt->execute([
+            $data['titulo'], 
+            $numeroBinario, 
+            $data['descripcion'], 
+            $data['estado']?? 'pendiente'
+        ]);
         
         echo json_encode([
             'success' => true,
@@ -57,7 +85,6 @@ try {
             exit;
         }
 
-
         // Construir query 
         $campos = [];
         $valores = [];
@@ -69,7 +96,7 @@ try {
         
         if (isset($data['numero'])) {
             $campos[] = 'numero = ?';
-            $valores[] = $data['numero'];
+            $valores[] = convertirABinario($data['numero']); 
         }
         
         if (isset($data['descripcion'])) {
