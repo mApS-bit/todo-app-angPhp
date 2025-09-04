@@ -1,4 +1,4 @@
-import { Component, signal, OnInit } from '@angular/core';
+import { Component, signal, OnInit, input } from '@angular/core';
 import { TareasService } from './tareas/tareas.service';
 import { Todo } from '../models/todo.model';
 import { UserView } from './userView';
@@ -54,12 +54,19 @@ export class App implements OnInit {
 
   //POST nueva tarea Method
   onAddTask(task : {titulo : string; numero : string; descripcion?: string}){
-    this.tareasService.createTarea(task).subscribe({
+
+    const taskBinary = {
+      ...task,
+      numero: this.convertIntoBinary(task.numero)
+    }
+
+    this.tareasService.createTarea(taskBinary).subscribe({
     next: (res: any) => {
+
       const nuevaTarea: Todo = {
         id: res.id, 
         titulo: task.titulo,
-        numero: task.numero,
+        numero: taskBinary.numero,
         descripcion: task.descripcion,
         estado: 'pendiente',
         fecha_creacion: new Date()
@@ -70,6 +77,15 @@ export class App implements OnInit {
     error: (err) => console.error('Error al crear tarea: ', err)
   });
   }
+
+  //Helper method to convert decimal into binary
+
+  convertIntoBinary(num : string){
+    const decimalNumber = parseInt(num,10)
+
+    return  decimalNumber.toString(2);
+  }
+
   //UPDATE
   onUpdateEstado(update: { id: number; estado: Todo['estado'] }) {
     console.log('Actualizar tarea:', update);

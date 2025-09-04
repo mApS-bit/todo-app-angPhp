@@ -9,7 +9,7 @@ import { Todo } from '../models/todo.model';
   template: `
     <form (ngSubmit)="submitTask()" class="d-flex my-3">
       <input type="text"
-             [(ngModel)]="titulo"
+             [(ngModel)]="titulo" required
              name="title"
              class="form-control me-2"
              placeholder="Título de la tarea">
@@ -17,7 +17,7 @@ import { Todo } from '../models/todo.model';
              [(ngModel)]="numero"
              name="numero"
              class="form-control me-2"
-             placeholder="Número binario">
+             placeholder="Número">
       <input type="text"
              [(ngModel)]="descripcion"
              name="descripcion"
