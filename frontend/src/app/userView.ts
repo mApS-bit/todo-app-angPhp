@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 
 @Component({
-  selector: 'us-view',
+  selector: 'user-view',
   standalone: true,
   template: `
     <header class="bg-primary text-white p-3 text-center">

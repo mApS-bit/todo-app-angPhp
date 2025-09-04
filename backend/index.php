@@ -13,3 +13,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 // aquí ya sigue tu enrutamiento normal
 include './tareas/task.php'; 
+
