@@ -11,8 +11,8 @@ import { Todo } from '../models/todo.model';
     <ul class="list-group my-3">
       <li *ngFor="let todo of todos" class="list-group-item d-flex justify-content-between align-items-center">
         <div>
-          <div><b>{{ todo.title }}</b> ({{ todo.numero }})</div>
-          <div class="small">{{ todo.descripcion || '—' }} · {{ todo.createdAt | date:'short' }}</div>
+          <div><b>{{ todo.titulo }}</b> ({{ todo.numero }})</div>
+          <div class="small">{{ todo.descripcion || '—' }} · {{ todo.fecha_creacion | date:'short' }}</div>
         </div>
 
         <!-- Menu para cambiar el estado -->
