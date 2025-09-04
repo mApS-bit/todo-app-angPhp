@@ -8,23 +8,31 @@ import { Todo } from '../models/todo.model';
   standalone: true,
   imports: [FormsModule, CommonModule],
   template: `
-    <ul class="list-group my-3">
-      <li *ngFor="let todo of todos" class="list-group-item d-flex justify-content-between align-items-center">
-        <div>
-          <div><b>{{ todo.titulo }}</b> ({{ todo.numero }})</div>
-          <div class="small">{{ todo.descripcion || '—' }} · {{ todo.fecha_creacion | date:'short' }}</div>
-        </div>
+    <ul class="list-group list-group-flush">
+        <li *ngFor="let todo of todos"
+    [ngClass]="{
+      'list-group-item-success': todo.estado === 'completado',
+      'list-group-item-warning': todo.estado === 'en progreso',
+      'list-group-item-secondary': todo.estado === 'pendiente'
+    }"
+    class="list-group-item d-flex justify-content-between align-items-center">
 
-        <!-- Menu para cambiar el estado -->
-        <select [(ngModel)]="todo.estado" class="form-select form-select-sm w-auto">
-          <option value="pendiente">pendiente</option>
-          <option value="en progreso">en progreso</option>
-          <option value="completado">completado</option>
-        </select>
-        <button (click)="deleteTodo(todo.id)">Borrar</button>
-      </li>
+            <div>
+            <div><b>{{ todo.titulo }}</b> (#{{ todo.numero }})</div>
+            <div class="text-muted small">{{ todo.descripcion || '—' }} · {{ todo.fecha_creacion | date:'short' }}</div>
+            </div>
+
+            <div class="d-flex align-items-center gap-2">
+            <select [(ngModel)]="todo.estado" class="form-select form-select-sm">
+                <option value="pendiente">pendiente</option>
+                <option value="en progreso">en progreso</option>
+                <option value="completado">completado</option>
+            </select>
+            <button (click)="deleteTodo(todo.id)" class="btn btn-danger btn-sm">Borrar</button>
+            </div>
+        </li>
     </ul>
-  `
+`
 })
 export class TodoList {
   @Input() todos: Todo[] = [];
