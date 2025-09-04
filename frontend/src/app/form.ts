@@ -35,8 +35,10 @@ export class FormTask {
   @Output() add = new EventEmitter<{ titulo: string; numero: string; descripcion?: string }>();
 
   submitTask() {
-    if (!this.titulo.trim() || !this.numero.trim()) return;
-
+    if (!this.titulo.trim() || !this.numero.trim()) {
+      window.alert('Los campos Titulo y número son necesarios para generar una tarea')
+      return;
+    }
     this.add.emit({
       titulo: this.titulo.trim(),
       numero: this.numero.trim(),
