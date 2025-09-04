@@ -9,7 +9,7 @@ import { Todo } from '../models/todo.model';
   template: `
     <form (ngSubmit)="submitTask()" class="d-flex my-3">
       <input type="text"
-             [(ngModel)]="title"
+             [(ngModel)]="titulo"
              name="title"
              class="form-control me-2"
              placeholder="Título de la tarea">
@@ -28,23 +28,23 @@ import { Todo } from '../models/todo.model';
   `
 })
 export class FormTask {
-  title: string = '';
+  titulo: string = '';
   numero: string = '';
   descripcion?: string;
 
-  @Output() add = new EventEmitter<{ title: string; numero: string; descripcion?: string }>();
+  @Output() add = new EventEmitter<{ titulo: string; numero: string; descripcion?: string }>();
 
   submitTask() {
-    if (!this.title.trim() || !this.numero.trim()) return;
+    if (!this.titulo.trim() || !this.numero.trim()) return;
 
     this.add.emit({
-      title: this.title.trim(),
+      titulo: this.titulo.trim(),
       numero: this.numero.trim(),
       descripcion: this.descripcion?.trim() || undefined
     });
 
     // limpiar inputs
-    this.title = '';
+    this.titulo = '';
     this.numero = '';
     this.descripcion = '';
   }
