@@ -23,7 +23,9 @@ import { Todo } from '../models/todo.model';
             </div>
 
             <div class="d-flex align-items-center gap-2">
-            <select [(ngModel)]="todo.estado" class="form-select form-select-sm">
+            <select [(ngModel)]="todo.estado" 
+            (ngModelChange)="onEstadoChange(todo, $event)"
+            class="form-select form-select-sm">
                 <option value="pendiente">pendiente</option>
                 <option value="en progreso">en progreso</option>
                 <option value="completado">completado</option>
@@ -37,8 +39,14 @@ import { Todo } from '../models/todo.model';
 export class TodoList {
   @Input() todos: Todo[] = [];
   @Output() delete = new EventEmitter<number>();
+  @Output() onChangeState = new EventEmitter<{id: number, estado: Todo['estado']}>();
 
   deleteTodo(id : number){
     this.delete.emit(id);
+  }
+
+  onEstadoChange(tarea: Todo, newState : Todo['estado']){
+    console.log('Cambio de estado:', tarea.id, '->', newState);
+    this.onChangeState.emit({id: tarea.id, estado: newState});
   }
 }

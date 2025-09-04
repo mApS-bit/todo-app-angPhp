@@ -25,6 +25,7 @@ import { TodoList } from './todoList';
         <div class="card-body p-0">
           <todo-list [todos]="tareas"
             (delete)="onDeleteTask($event)"
+            (onChangeState)="onUpdateEstado($event)"
           ></todo-list>
         </div>
       </div>
@@ -69,6 +70,22 @@ export class App implements OnInit {
     error: (err) => console.error('Error al crear tarea: ', err)
   });
   }
+  //UPDATE
+  onUpdateEstado(update: { id: number; estado: Todo['estado'] }) {
+    console.log('Actualizar tarea:', update);
+  this.tareasService.updateTarea(update.id, { estado: update.estado }).subscribe({
+    next: () => {
+      // Actualizar localmente
+      const tarea = this.tareas.find(t => t.id === update.id);
+      if (tarea) tarea.estado = update.estado as Todo["estado"];
+
+      // Recalcular completadas
+      this.completedTasks = this.tareas.filter(t => t.estado === "completado").length;
+    },
+    error: (err) => console.error('Error al actualizar tarea: ', err)
+  });
+}
+
 
  //DELETE tarea handler method
   onDeleteTask(id: number) {

@@ -25,6 +25,11 @@ export class TareasService {
   return this.http.post(this.apiUrl, task);
   }
 
+  updateTarea(id: number, cambios: Partial<Todo>): Observable<any> {
+  return this.http.put(`${this.apiUrl}?id=${id}`, cambios);
+}
+
+
   deleteTarea(id: number) {
     return this.http.delete<any>(`http://localhost:8000/tareas/task.php?id=${id}`);
   }
